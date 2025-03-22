@@ -1,0 +1,44 @@
+import nltk
+import random
+import string
+import warnings
+from nltk.chat.util import Chat, reflections
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+
+# Suppress warnings
+warnings.filterwarnings("ignore")
+
+# Sample chatbot responses using predefined patterns
+pairs = [
+    ["hi|hello|hey", ["Hello!", "Hi there!", "Hey! How can I help you?"]],
+    ["how are you?", ["I'm just a bot, but I'm doing great!", "I'm good, how about you?"]],
+    ["what is your name?", ["I'm a chatbot created by CodTech.", "You can call me CodTech Bot."]],
+    ["what can you do?", ["I can answer your basic questions using NLP.", "I help with simple queries!"]],
+    ["bye|goodbye", ["Goodbye!", "See you soon!", "Take care!"]],
+]
+
+# Create chatbot using NLTK's Chat class
+chatbot = Chat(pairs, reflections)
+
+# Function to process user input
+def chatbot_response(user_input):
+    return chatbot.respond(user_input.lower())
+
+# Start chat loop
+def chat():
+    print("CodTech Chatbot: Hello! How can I assist you today? (Type 'bye' to exit)")
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() in ["bye", "exit", "quit"]:
+            print("CodTech Chatbot: Goodbye! Have a great day!")
+            break
+        response = chatbot_response(user_input)
+        if response:
+            print("CodTech Chatbot:", response)
+        else:
+            print("CodTech Chatbot: Sorry, I didn't understand that.")
+
+# Run chatbot
+if __name__ == "__main__":
+    chat()
