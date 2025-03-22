@@ -1,0 +1,49 @@
+import requests
+import json
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# OpenWeatherMap API Key (Replace with your actual API key)
+API_KEY = "your_api_key_here"
+CITY = "New York"  # Change to your preferred city
+URL = f"http://api.openweathermap.org/data/2.5/forecast?q={CITY}&appid={API_KEY}&units=metric"
+
+print(f"Fetching weather data for {CITY}...")
+
+# Fetch weather data
+response = requests.get(URL)
+if response.status_code != 200:
+    print(" Error fetching data. Please check API key and city name.")
+    exit()
+
+data = response.json()
+
+# Extract relevant information
+dates, temperatures, humidity = [], [], []
+
+for forecast in data["list"]:
+    dates.append(forecast["dt_txt"])
+    temperatures.append(forecast["main"]["temp"])
+    humidity.append(forecast["main"]["humidity"])
+
+print("Data fetched successfully! Generating visualizations...")
+
+# Plot Temperature & Humidity Trends
+plt.figure(figsize=(12, 5))
+sns.set(style="darkgrid")
+
+plt.plot(dates, temperatures, marker="o", label="Temperature (°C)", color="tomato")
+plt.plot(dates, humidity, marker="s", label="Humidity (%)", color="royalblue")
+
+plt.xticks(rotation=45)
+plt.xlabel("Date & Time")
+plt.ylabel("Value")
+plt.title(f"Weather Forecast for {CITY}")
+plt.legend()
+plt.tight_layout()
+
+# Save and Show Plot
+plt.savefig("weather_visualization.png")
+plt.show()
+
+print("Visualization saved as 'weather_visualization.png'. Check your directory!")
