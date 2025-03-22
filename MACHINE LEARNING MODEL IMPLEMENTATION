@@ -1,0 +1,60 @@
+import pandas as pd
+import numpy as np
+import nltk
+import re
+import string
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score, classification_report
+
+# Load dataset (Replace with actual dataset file)
+# Example dataset: https://www.kaggle.com/datasets/uciml/sms-spam-collection-dataset
+try:
+    dataset = pd.read_csv("/mnt/data/file-7DAt8FJ1T1D7WQexCUquba", encoding="latin-1")
+except Exception as e:
+    print("Error loading dataset:", e)
+    exit()
+
+# Assume dataset has 'v1' as label (ham/spam) and 'v2' as message text
+dataset = dataset.iloc[:, [0, 1]]  # Keeping only relevant columns
+dataset.columns = ["label", "message"]
+
+# Convert labels to binary (ham=0, spam=1)
+dataset["label"] = dataset["label"].map({"ham": 0, "spam": 1})
+
+# Text preprocessing function
+def preprocess_text(text):
+    text = text.lower()  # Lowercasing
+    text = re.sub(r"\d+", "", text)  # Removing numbers
+    text = text.translate(str.maketrans("", "", string.punctuation))  # Removing punctuation
+    words = nltk.word_tokenize(text)  # Tokenization
+    words = [word for word in words if word not in nltk.corpus.stopwords.words("english")]  # Removing stopwords
+    return " ".join(words)
+
+# Apply text preprocessing
+nltk.download("punkt")
+nltk.download("stopwords")
+dataset["cleaned_message"] = dataset["message"].apply(preprocess_text)
+
+# Splitting dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    dataset["cleaned_message"], dataset["label"], test_size=0.2, random_state=42
+)
+
+# Converting text data to numerical vectors using TF-IDF
+vectorizer = TfidfVectorizer()
+X_train_tfidf = vectorizer.fit_transform(X_train)
+X_test_tfidf = vectorizer.transform(X_test)
+
+# Training Naive Bayes classifier
+model = MultinomialNB()
+model.fit(X_train_tfidf, y_train)
+
+# Making predictions
+y_pred = model.predict(X_test_tfidf)
+
+# Evaluating model performance
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Model Accuracy: {accuracy:.2f}")
+print("Classification Report:\n", classification_report(y_test, y_pred))
