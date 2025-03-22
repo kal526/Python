@@ -1,0 +1,55 @@
+import pandas as pd
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+import time
+
+# Load dataset (Replace with actual file path)
+file_path = "/mnt/data/file-UnYYv9inNTGCpwGXg3wkfQ"
+
+print("📂 Loading dataset for analysis...")
+try:
+    df = pd.read_csv(file_path)  # Modify if the file format is different (Excel: pd.read_excel)
+    print("✅ Dataset loaded successfully!")
+except Exception as e:
+    print("❌ Error loading dataset. Please check the file format and try again.")
+    exit()
+
+# Basic analysis
+print("📊 Analyzing dataset...")
+time.sleep(1)
+summary = df.describe()  # Statistical summary
+columns = df.columns.tolist()  # Column names
+row_count = len(df)  # Total number of records
+
+# Generate PDF report
+report_filename = "automated_report.pdf"
+print(f"📄 Generating report: {report_filename}...")
+
+c = canvas.Canvas(report_filename, pagesize=letter)
+c.setFont("Helvetica-Bold", 16)
+c.drawString(200, 750, "📋 Automated Data Report")
+c.setFont("Helvetica", 12)
+
+# Add dataset information
+c.drawString(50, 720, f"🔢 Total Records: {row_count}")
+c.drawString(50, 700, f"📝 Columns: {', '.join(columns)}")
+
+# Add summary statistics
+c.drawString(50, 680, "📊 Summary Statistics:")
+c.setFont("Helvetica", 10)
+
+y_position = 660
+for col in summary.columns:
+    stats = summary[col]
+    c.drawString(50, y_position, f"📌 {col}: Mean={stats['mean']:.2f}, Min={stats['min']}, Max={stats['max']}")
+    y_position -= 20
+    if y_position < 50:
+        c.showPage()  # Create new page if necessary
+        c.setFont("Helvetica", 10)
+        y_position = 750
+
+c.save()
+print(f"✅ Report generated successfully: {report_filename}")
+
+# Notify user
+print("\n📄 Your automated report is ready! Open 'automated_report.pdf' to view the results.")
