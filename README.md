@@ -4,6 +4,8 @@ Intern ID:- CT08UFR
 Domain:- Python Programming 
 Duration:- 4 Weeks
 Mentor:- Neela Santosh
+![Image](https://github.com/user-attachments/assets/b2f1679f-d9b2-4231-89ed-824242faeb8b)
+ 
 
 During your CodTech Virtual Internship, you successfully completed four technical tasks, each focusing on different aspects of Python programming, ranging from API integration and data visualization to automation, natural language processing, and machine learning. These tasks provided hands-on experience with real-world applications, helping you develop skills in data handling, automation, artificial intelligence, and predictive modeling.
 The first task required you to integrate a public API and visualize the data using Python. You worked with the OpenWeatherMap API to fetch real-time weather data for a selected location. After retrieving the data, you extracted important information such as temperature and humidity trends over time. Using Matplotlib and Seaborn, you created a well-structured visualization that presented the data in an easy-to-understand format. This task helped you understand API integration, data extraction, and the importance of visual representation in making complex information more accessible.
